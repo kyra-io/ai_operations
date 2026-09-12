@@ -1,13 +1,29 @@
 import os
 from dotenv import load_dotenv
+from pydantic import BaseModel, PositiveInt
 import json
 from mistralai.client import Mistral as mistral
 
 load_dotenv()
+
 API_KEY = os.getenv("MISTRAL_API_KEY")
 MODEL = "open-mistral-nemo-2407"
 
 MISTRAL_CLIENT = mistral(api_key=API_KEY)
+
+
+class LLM_Usage(BaseModel):
+    prompt_tokens: int
+    completion_tokes: int
+    total_tokens: int
+
+
+class LLM_Res(BaseModel):
+    id: str
+    model: str
+    usage: LLM_Usage
+    role: str
+    message: str
 
 
 def main():
@@ -16,8 +32,8 @@ def main():
     output = mistral_req(input)
 
     if output is not None:
-        if output["message"] is not None:
-            print(output["message"])
+        if output.message is not None:
+            print(output.message)
 
 
 def ask_user():
@@ -49,6 +65,8 @@ def mistral_req(input):
             "role": response.choices[0].message.role,
             "message": response.choices[0].message.content,
         }
+
+        chat_res = LLM_Res(**chat_res)
         return chat_res
 
     return None
