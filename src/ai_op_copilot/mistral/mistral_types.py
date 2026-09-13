@@ -21,6 +21,4 @@ class LLM_Res(BaseModel):
 
 
 class LLM_Err(BaseModel):
-    model_config = ConfigDict(frozen=True)
-
     message: str
