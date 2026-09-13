@@ -1,0 +1,22 @@
+[project]
+name = "ai-op-copilot"
+version = "0.1.0"
+description = "CLI para consultar modelos Mistral"
+readme = "README.md"
+authors = [
+    { name = "pedrosanto90", email = "pedro.bb.90@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.141.1",
+    "mistralai==2.10.0",
+    "pydantic==2.13.5",
+    "python-dotenv==1.2.3",
+]
+
+[project.scripts]
+ai-op-copilot = "ai_op_copilot.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"

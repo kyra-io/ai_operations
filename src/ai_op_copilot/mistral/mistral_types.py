@@ -1,4 +1,4 @@
-from pydantic import BaseModel, PositiveInt
+from pydantic import BaseModel
 
 
 class LLM_Usage(BaseModel):
@@ -13,6 +13,7 @@ class LLM_Res(BaseModel):
     usage: LLM_Usage
     role: str
     message: str
+    # latency_ms: int
 
 
 class LLM_Err(BaseModel):

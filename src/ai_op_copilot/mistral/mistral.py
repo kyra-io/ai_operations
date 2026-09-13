@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 from mistralai.client import Mistral as mistral
-from mistral_types import LLM_Res, LLM_Err
+from .mistral_types import LLM_Res, LLM_Err
 
 load_dotenv()
 
@@ -44,6 +44,7 @@ class Mistral:
                 },
                 "role": response.choices[0].message.role,
                 "message": response.choices[0].message.content,
+                "latency_ms": "",
             }
 
             chat_res = LLM_Res(**chat_res)
