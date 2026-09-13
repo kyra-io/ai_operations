@@ -1,13 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class LLM_Usage(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
     prompt_tokens: int
     completion_tokens: int
     total_tokens: int
 
 
 class LLM_Res(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
     id: str
     model: str
     usage: LLM_Usage
@@ -17,4 +21,6 @@ class LLM_Res(BaseModel):
 
 
 class LLM_Err(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
     message: str
