@@ -35,6 +35,16 @@ Por predefinição, inicia o servidor FastAPI em `http://127.0.0.1:8000`.
 A documentação interativa está disponível em `http://127.0.0.1:8000/docs`.
 Para parar o servidor, utiliza `Ctrl+C`.
 
+Para desenvolver com recarregamento automático e logs de debug:
+
+```sh
+uv run ai-op-copilot --dev
+```
+
+Equivale a `uv run uvicorn ai_op_copilot.api.server:app --reload --log-level debug`,
+com o servidor em `http://127.0.0.1:8000`. Sem argumentos, o comportamento
+mantém-se. As opções `--dev` e `--cli` não podem ser combinadas.
+
 Para iniciar o CLI interativo:
 
 ```sh

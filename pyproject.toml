@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "CLI para consultar modelos Mistral"
 readme = "README.md"
 authors = [
-    { name = "pedrosanto90", email = "pedro.bb.90@gmail.com" }
+    { name = "Pedro Santo", email = "pedro.esanto@pedroesanto.com" }
 ]
 requires-python = ">=3.13"
 dependencies = [
@@ -12,6 +12,7 @@ dependencies = [
     "mistralai==2.10.0",
     "pydantic==2.13.5",
     "python-dotenv==1.2.3",
+    "uuid>=1.30",
 ]
 
 [project.scripts]
