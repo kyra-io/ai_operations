@@ -11,23 +11,32 @@ class HelpOnErrorParser(argparse.ArgumentParser):
 def main():
     parser = HelpOnErrorParser(description="KyraIO - AI Operations Copilot")
     parser = argparse.ArgumentParser(description="KyraIO - AI Operations Copilot")
-    parser.add_argument(
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument(
         "--cli",
         action="store_true",
         help="start the CLI instead of the web server",
     )
+    modes.add_argument(
+        "--dev",
+        action="store_true",
+        help="start the web server with auto-reload and debug logging",
+    )
     args = parser.parse_args()
 
-    if not sys.argv[1:]:
-        import uvicorn
+    match args:
+        case args.cli:
+            from .cli import main as run_cli
 
-        uvicorn.run(
-            "ai_op_copilot.api.server:app",
-            host="0.0.0.0",
-            port=8000,
-        )
+            run_cli()
 
-    elif args.cli:
-        from .cli import main as run_cli
+        case _:
+            import uvicorn
 
-        run_cli()
+            uvicorn.run(
+                "ai_op_copilot.api.server:app",
+                host="0.0.0.0" if args.dev else "127.0.0.1",
+                port=8000,
+                reload=args.dev,
+                log_level="debug" if args.dev else "info",
+            )
