@@ -39,7 +39,7 @@ class Mistral:
                 "model": response.model,
                 "usage": {
                     "prompt_tokens": response.usage.prompt_tokens,
-                    "completion_tokes": response.usage.prompt_tokens,
+                    "completion_tokens": response.usage.prompt_tokens,
                     "total_tokens": response.usage.total_tokens,
                 },
                 "role": response.choices[0].message.role,

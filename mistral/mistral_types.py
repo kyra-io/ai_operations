@@ -3,7 +3,7 @@ from pydantic import BaseModel, PositiveInt
 
 class LLM_Usage(BaseModel):
     prompt_tokens: int
-    completion_tokes: int
+    completion_tokens: int
     total_tokens: int
 
 
