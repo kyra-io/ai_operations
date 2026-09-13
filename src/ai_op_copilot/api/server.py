@@ -1,6 +1,29 @@
+from contextlib import asynccontextmanager
+from pathlib import Path
+
 from fastapi import FastAPI
 
-app = FastAPI()
+from ..chat_service import ChatService
+from ..repositories.sqlite import SQLiteConversationRepository
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    project_root = Path(__file__).resolve().parents[3]
+    data_directory = project_root / "data"
+    data_directory.mkdir(parents=True, exist_ok=True)
+
+    repository = SQLiteConversationRepository(
+        db_path=data_directory / "conversations.db"
+    )
+    repository.initialize()
+
+    app.state.chat_service = ChatService(repository)
+
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/")
