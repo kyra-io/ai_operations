@@ -15,8 +15,12 @@ dependencies = [
 ]
 
 [project.scripts]
-ai-op-copilot = "ai_op_copilot.cli:main"
+ai-op-copilot = "ai_op_copilot.main:main"
 
 [build-system]
 requires = ["uv_build>=0.12.13,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.pyright]
+  venvPath = "."
+  venv = ".venv"

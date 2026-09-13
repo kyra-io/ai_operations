@@ -1,6 +1,7 @@
 # AI OP Copilot
 
-CLI Python para consultar modelos Mistral. Autor: Pedro Santo.
+Aplicação Python com servidor FastAPI e CLI para consultar modelos Mistral.
+Autor: Pedro Santo.
 
 ## Preparação
 
@@ -14,7 +15,8 @@ uv sync --locked
 O uv gere o Python 3.13 indicado em `.python-version` e o ambiente `.venv`.
 Não é necessário ativar o ambiente manualmente.
 
-Cria um ficheiro `.env` na raiz, ou utiliza o existente, com os teus valores:
+Para utilizar o CLI, cria um ficheiro `.env` na raiz, ou utiliza o existente,
+com os teus valores:
 
 ```dotenv
 MISTRAL_API_KEY=<a tua chave de API>
@@ -29,8 +31,20 @@ O ficheiro `.env` está excluído do Git.
 uv run ai-op-copilot
 ```
 
-Também podes executar `uv run python -m ai_op_copilot`.
-A CLI pede uma pergunta e envia-a à API do Mistral.
+Por predefinição, inicia o servidor FastAPI em `http://127.0.0.1:8000`.
+A documentação interativa está disponível em `http://127.0.0.1:8000/docs`.
+Para parar o servidor, utiliza `Ctrl+C`.
+
+Para iniciar o CLI interativo:
+
+```sh
+uv run ai-op-copilot --cli
+```
+
+O CLI pede uma pergunta e envia-a à API do Mistral.
+Consulta as opções com `uv run ai-op-copilot --help`.
+
+Também podes executar `uv run python -m ai_op_copilot`, com as mesmas opções.
 
 ## Dependências
 
@@ -57,6 +71,10 @@ src/ai_op_copilot/
     __init__.py
     __main__.py
     cli.py
+    main.py
+    api/
+        __init__.py
+        server.py
     mistral/
         __init__.py
         mistral.py
