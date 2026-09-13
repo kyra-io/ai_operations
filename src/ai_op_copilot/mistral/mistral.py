@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 
 from mistralai.client import Mistral as mistral
+
 from .mistral_types import LLM_Res, LLM_Err
 
 load_dotenv()
