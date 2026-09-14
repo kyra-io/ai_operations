@@ -1,10 +1,11 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 
 from ..chat_service import ChatService
 from ..repositories.sqlite import SQLiteConversationRepository
+from ..models import Conversation
 
 
 @asynccontextmanager
@@ -31,11 +32,12 @@ def read_root():
     return {"Hello World"}
 
 
-@app.get("/health")
+@app.get("/health", status_code=200)
 def check_health():
     return {"status": "200 OK", "message": "KyraIO - AI Operations Copilot is running"}
 
 
-@app.post("/conversations")
-def create_conversation():
-    pass
+@app.post("/conversations", response_model=Conversation, status_code=201)
+def create_conversation(request: Request) -> Conversation:
+    service: ChatService = request.app.state.chat_service
+    return service.create_conversation()
