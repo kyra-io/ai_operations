@@ -41,3 +41,9 @@ def check_health():
 def create_conversation(request: Request) -> Conversation:
     service: ChatService = request.app.state.chat_service
     return service.create_conversation()
+
+
+@app.get("/conversations", response_model=list[Conversation], status_code=200)
+def get_all_conversations(request: Request) -> list[Conversation]:
+    service: ChatService = request.app.state.chat_service
+    return service.get_all_conversations()

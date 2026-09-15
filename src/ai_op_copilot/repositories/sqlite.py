@@ -32,3 +32,13 @@ class SQLiteConversationRepository:
                         conversation.created_at.isoformat(),
                     ),
                 )
+
+    def get_all(self) -> list[Conversation]:
+        with closing(sqlite3.connect(self.db_path)) as connection:
+            with connection:
+                rows = connection.execute("""
+                        SELECT id, created_at
+                        FROM conversations
+                        ORDER BY created_at DESC
+                        """).fetchall()
+        return [Conversation(id=row[0], created_at=row[1]) for row in rows]

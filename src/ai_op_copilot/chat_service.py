@@ -18,3 +18,6 @@ class ChatService:
         self.repository.create(conversation)
 
         return conversation
+
+    def get_all_conversations(self) -> list[Conversation]:
+        return self.repository.get_all()
