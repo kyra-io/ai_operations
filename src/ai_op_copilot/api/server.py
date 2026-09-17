@@ -1,11 +1,14 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
+from uuid import UUID
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 
 from ..chat_service import ChatService
-from ..repositories.sqlite import SQLiteConversationRepository
-from ..models import Conversation
+from ..repositories.sqlite import SQLiteConversationRepository, SQLiteMessageRepository
+from ..models import Conversation, Message
+from ..errors import ConversationNotFoundError
+from .schemas import CreateMessageRequest
 
 
 @asynccontextmanager
@@ -14,12 +17,17 @@ async def lifespan(app: FastAPI):
     data_directory = project_root / "data"
     data_directory.mkdir(parents=True, exist_ok=True)
 
-    repository = SQLiteConversationRepository(
-        db_path=data_directory / "conversations.db"
-    )
-    repository.initialize()
+    db_path = data_directory / "conversations.db"
 
-    app.state.chat_service = ChatService(repository)
+    conversation_repository = SQLiteConversationRepository(db_path=db_path)
+    message_repository = SQLiteMessageRepository(db_path=db_path)
+
+    conversation_repository.initialize()
+
+    app.state.chat_service = ChatService(
+        conversation_repository=conversation_repository,
+        message_repository=message_repository,
+    )
 
     yield
 
@@ -47,3 +55,52 @@ def create_conversation(request: Request) -> Conversation:
 def get_all_conversations(request: Request) -> list[Conversation]:
     service: ChatService = request.app.state.chat_service
     return service.get_all_conversations()
+
+
+@app.post(
+    "/conversations/{conversation_id}/messages",
+    response_model=Message,
+    status_code=201,
+)
+def create_user_message(
+    conversation_id: UUID,
+    payload: CreateMessageRequest,
+    request: Request,
+) -> Message:
+    service: ChatService = request.app.state.chat_service
+
+    try:
+        return service.add_user_message(
+            conversation_id=conversation_id,
+            content=payload.content,
+        )
+    except ConversationNotFoundError as error:
+        raise HTTPException(
+            status_code=404,
+            detail=str(error),
+        ) from error
+    except ValueError as error:
+        raise HTTPException(
+            status_code=422,
+            detail=str(error),
+        ) from error
+
+
+@app.get(
+    "/conversations/{conversation_id}/messages",
+    response_model=list[Message],
+    status_code=200,
+)
+def get_conversation_messages(
+    conversation_id: UUID,
+    request: Request,
+) -> list[Message]:
+    service: ChatService = request.app.state.chat_service
+
+    try:
+        return service.get_conversation_messages(conversation_id)
+    except ConversationNotFoundError as error:
+        raise HTTPException(
+            status_code=404,
+            detail=str(error),
+        ) from error
