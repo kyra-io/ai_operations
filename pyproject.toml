@@ -3,6 +3,8 @@ name = "ai-op-copilot"
 version = "0.1.0"
 description = "CLI para consultar modelos Mistral"
 readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 authors = [
     { name = "Pedro Santo", email = "pedro.esanto@pedroesanto.com" }
 ]

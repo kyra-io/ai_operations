@@ -236,3 +236,9 @@ To build package distributions in `dist/`, run:
 ```sh
 uv build
 ```
+
+## License
+
+Copyright 2026 Pedro Santo.
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
