@@ -7,8 +7,10 @@ from fastapi import FastAPI, HTTPException, Request
 from ..chat_service import ChatService
 from ..repositories.sqlite import SQLiteConversationRepository, SQLiteMessageRepository
 from ..models import Conversation, Message
-from ..errors import ConversationNotFoundError
+from ..errors import ConversationNotFoundError, LLMError
 from .schemas import CreateMessageRequest
+from ..context import ContextBuilder
+from ..mistral.mistral import Mistral
 
 
 @asynccontextmanager
@@ -22,11 +24,16 @@ async def lifespan(app: FastAPI):
     conversation_repository = SQLiteConversationRepository(db_path=db_path)
     message_repository = SQLiteMessageRepository(db_path=db_path)
 
+    context_builder = ContextBuilder()
+    llm_client = Mistral()
+
     conversation_repository.initialize()
 
     app.state.chat_service = ChatService(
         conversation_repository=conversation_repository,
         message_repository=message_repository,
+        context_builder=context_builder,
+        llm_client=llm_client,
     )
 
     yield
@@ -70,7 +77,7 @@ def create_user_message(
     service: ChatService = request.app.state.chat_service
 
     try:
-        return service.add_user_message(
+        return service.send_message(
             conversation_id=conversation_id,
             content=payload.content,
         )
@@ -84,6 +91,8 @@ def create_user_message(
             status_code=422,
             detail=str(error),
         ) from error
+    except LLMError as error:
+        raise HTTPException(status_code=502, detail="The LLM request failed") from error
 
 
 @app.get(
