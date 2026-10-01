@@ -71,6 +71,9 @@ class SQLiteConversationRepository:
                 (str(conversation_id),),
             ).fetchone()
 
+            if row is None:
+                return None
+
             return Conversation.model_validate(dict(row))
 
 
